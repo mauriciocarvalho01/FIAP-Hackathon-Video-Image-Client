@@ -23,7 +23,7 @@ export default function Register() {
 
     const [loginResponse, loginError] = await request({
       method: "POST",
-      url: "http://localhost:4081/v1/api/register",
+      url: `${process.env.BASE_URL}/v1/api/register`,
       data: {
         name,
         displayName: name.split(" ")[0],

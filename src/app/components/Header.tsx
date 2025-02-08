@@ -2,7 +2,15 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Avatar } from '@mui/material';
 
-const Header = ({ user }) => {
+
+type User = {
+  email: string
+  displayName: string
+  image: string
+  userId: string
+}
+
+const Header = ({ user }: { user: User }) => {
   return (
     <AppBar position="static">
       <Toolbar>

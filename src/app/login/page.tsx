@@ -7,6 +7,9 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { request } from "@/app/lib/http/request";
 
+
+type GenericType<T=any> = T
+
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -21,7 +24,7 @@ export default function Login() {
 
     const [loginResponse, loginError] = await request({
       method: "POST",
-      url: "http://localhost:4081/v1/api/login",
+      url: `${process.env.BASE_URL}/v1/api/login`,
       data: {
         email,
         password,
@@ -36,8 +39,9 @@ export default function Login() {
       return;
     }
 
+    const { data } = loginResponse as GenericType
     // Salvar o token no sessionStorage
-    const accessToken = loginResponse?.data?.accessToken;
+    const accessToken = data?.accessToken;
     if (accessToken) {
       sessionStorage.setItem("accessToken", accessToken);
       console.log("Token salvo no sessionStorage:", accessToken);

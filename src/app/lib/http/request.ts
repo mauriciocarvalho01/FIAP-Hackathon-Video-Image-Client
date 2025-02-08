@@ -13,7 +13,7 @@ async function safeAsync<T>(
 
     // Verifica se é um AxiosError
     if (axios.isAxiosError(error)) {
-      normalizedError = error.response.data
+      normalizedError = error?.response?.data
     } else {
       // Caso contrário, normaliza como um erro genérico
       normalizedError =

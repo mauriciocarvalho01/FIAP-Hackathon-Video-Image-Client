@@ -13,14 +13,17 @@ import CircularProgress from "@mui/joy/CircularProgress";
 import { request } from "@/app/lib/http/request";
 import JSZip from "jszip";
 
+
+type GenericType<T=any> =T
+
 export default function MediaCover() {
   const [alert, setAlert] = React.useState<{ error?: string }>({});
-  const [videoStatus, setVideoStatus] = React.useState<any>(null);
+  const [videoStatus, setVideoStatus] = React.useState<GenericType>(null);
   const [images, setImages] = React.useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = React.useState<number>(0);
   const { videoId } = useParams();
   const router = useRouter();
-  const videoStatusRef = React.useRef<any>(null);
+  const videoStatusRef = React.useRef<GenericType>(null);
 
   // Função para buscar o status do vídeo
   const getVideoStatus = React.useCallback(async () => {
@@ -29,7 +32,7 @@ export default function MediaCover() {
     try {
       const [videoStatusResponse, videoStatusError] = await request({
         method: "GET",
-        url: `http://localhost:4081/v1/api/video/status?videoId=${videoId}`,
+        url: `${process.env.BASE_URL}/v1/api/video/status?videoId=${videoId}`,
         config: {
           headers: {
             Authorization: sessionStorage.getItem("accessToken"),
@@ -41,18 +44,19 @@ export default function MediaCover() {
         setAlert({ error: "Não foi possível localizar o status do vídeo." });
         return;
       }
+      const { data } = videoStatusResponse as GenericType
 
       // Se a resposta for um array, pega o primeiro item
-      const data =
-        Array.isArray(videoStatusResponse.data) &&
-        videoStatusResponse.data.length > 0
-          ? videoStatusResponse.data[0]
-          : videoStatusResponse.data;
+      const videoStatusData =
+        Array.isArray(data) &&
+        data.length > 0
+          ? data[0]
+          : data;
 
       // Atualiza o estado somente se os dados forem diferentes
-      if (JSON.stringify(videoStatusRef.current) !== JSON.stringify(data)) {
-        videoStatusRef.current = data;
-        setVideoStatus(data);
+      if (JSON.stringify(videoStatusRef.current) !== JSON.stringify(videoStatusData)) {
+        videoStatusRef.current = videoStatusData;
+        setVideoStatus(videoStatusData);
       }
     } catch (error) {
       console.error("Erro ao buscar status do vídeo:", error);
@@ -100,8 +104,10 @@ export default function MediaCover() {
             throw new Error("Erro ao baixar o arquivo ZIP");
           }
 
+          const { data } = imagesResponse as GenericType
+
           // Em uma resposta do axios com responseType "blob", o blob estará em imagesResponse.data
-          const blob = imagesResponse.data;
+          const blob = data;
           const zip = await JSZip.loadAsync(blob);
 
           // Filtra os arquivos com o padrão frame-XXXX.png, ordena e cria URLs para cada imagem
@@ -280,10 +286,11 @@ export default function MediaCover() {
               </Box>
             </Box>
           ) : (
-            <Typography>{!alert ? 'Renderizando imagens.' : 'Ocorreu um erro ao renderizar as imagens'}</Typography>
+            <Typography>{!alert.error ? 'Renderizando imagens...' : 'Ocorreu um erro ao renderizar as imagens'}</Typography>
           )}
           <Box sx={{ textAlign: "center", marginTop: 2 }}>
             <Button
+              // disable={`${Object.keys(alert).length > 0}`}
               component="a"
               href={videoStatus.imagesUrl}
               download

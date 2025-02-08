@@ -5,13 +5,22 @@ import { Button, CircularProgress, Box, Container, Typography, Alert } from '@mu
 import { request } from "@/app/lib/http/request";
 import { useRouter } from "next/navigation";
 
-const VideoUpload = ({ user }) => {
+type User = {
+  email: string
+  displayName: string
+  image: string
+  userId: string
+}
+
+type GenericType<T=any> = T
+
+const VideoUpload = ({ user }: { user: User }) => {
   const router = useRouter();
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<GenericType>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (event: GenericType) => {
     setFile(event.target.files[0]);
   };
 
@@ -27,7 +36,7 @@ const VideoUpload = ({ user }) => {
     try {
     const [videoResponse, videoError] = await request({
         method: "POST",
-        url: "http://localhost:4081/v1/api/video/upload",
+        url: `${process.env.BASE_URL}/v1/api/video/upload`,
         data: formData,
         config: {
             headers: {
@@ -42,9 +51,10 @@ const VideoUpload = ({ user }) => {
         return;
       }
 
-      if (videoResponse.status === 201) {
+      if (videoResponse && videoResponse.status === 201) {
         console.log(videoResponse)
-        router.push(`/images/${videoResponse.data.videoId}`)
+        const { data } = videoResponse as GenericType
+        router.push(`/images/${data.videoId}`)
       }
     } catch (error) {
         setError('Erro ao fazer upload do vídeo.');
