@@ -42,7 +42,7 @@ spec:
               cpu: "512m"
           envFrom:
             - secretRef:
-                name: hackathon-video-image-secrets
+                name: fiap/hackathon-video-image-secrets hackathon-video-image-client-secrets
             - configMapRef:
                 name: fiap-hackathon-video-image-client-vars
           readinessProbe:
