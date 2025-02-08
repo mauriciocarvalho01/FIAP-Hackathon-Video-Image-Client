@@ -11,7 +11,7 @@ RUN npm run build
 FROM node:alpine as ts-remover
 WORKDIR /usr/app
 COPY --from=ts-compiler /usr/app/package*.json ./
-COPY --from=ts-compiler /usr/app/dist ./dist
+COPY --from=ts-compiler /usr/app/.next ./dist
 
 FROM node:alpine
 WORKDIR /usr/app
