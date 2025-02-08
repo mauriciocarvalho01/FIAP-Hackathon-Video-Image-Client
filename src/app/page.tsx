@@ -1,6 +1,5 @@
 'use client'
-import 'dotenv/config'
-console.log(process.env)
+
 import { useRouter } from 'next/navigation'
  
 export default function Page() {
