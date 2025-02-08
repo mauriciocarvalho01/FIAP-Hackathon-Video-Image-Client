@@ -24,7 +24,7 @@ export default function Login() {
 
     const [loginResponse, loginError] = await request({
       method: "POST",
-      url: `${process.env.BASE_URL}/v1/api/login`,
+      url: `${process.env.API_URL}/v1/api/login`,
       data: {
         email,
         password,

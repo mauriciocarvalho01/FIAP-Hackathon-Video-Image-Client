@@ -36,7 +36,7 @@ const VideoUpload = ({ user }: { user: User }) => {
     try {
     const [videoResponse, videoError] = await request({
         method: "POST",
-        url: `${process.env.BASE_URL}/v1/api/video/upload`,
+        url: `${process.env.API_URL}/v1/api/video/upload`,
         data: formData,
         config: {
             headers: {

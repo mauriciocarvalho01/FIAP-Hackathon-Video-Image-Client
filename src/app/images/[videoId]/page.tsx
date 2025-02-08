@@ -32,7 +32,7 @@ export default function MediaCover() {
     try {
       const [videoStatusResponse, videoStatusError] = await request({
         method: "GET",
-        url: `${process.env.BASE_URL}/v1/api/video/status?videoId=${videoId}`,
+        url: `${process.env.API_URL}/v1/api/video/status?videoId=${videoId}`,
         config: {
           headers: {
             Authorization: sessionStorage.getItem("accessToken"),

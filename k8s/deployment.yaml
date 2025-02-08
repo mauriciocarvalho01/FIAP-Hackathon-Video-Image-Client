@@ -45,17 +45,3 @@ spec:
                 name: hackathon-video-image-secrets
             - configMapRef:
                 name: fiap-hackathon-video-image-client-vars
-          readinessProbe:
-              httpGet:
-                  path: /v1/api/healthcheck
-                  port: 3000
-              initialDelaySeconds: 0
-              timeoutSeconds: 1
-              periodSeconds: 10
-          livenessProbe:
-              httpGet:
-                  path: /v1/api/healthcheck
-                  port: 3000
-              initialDelaySeconds: 0
-              timeoutSeconds: 1
-              periodSeconds: 10
