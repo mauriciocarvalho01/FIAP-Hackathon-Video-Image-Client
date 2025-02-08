@@ -1,36 +1,43 @@
-FROM node:alpine as ts-compiler
+# 1️⃣ Etapa de instalação de dependências
+FROM node:18-alpine AS deps
 WORKDIR /usr/app
-COPY package*.json ./
-COPY tsconfig*.json ./
-RUN npm install
 
-# Copie todo o código fonte e compile
-COPY . ./
+# Copia apenas os arquivos necessários para instalar dependências
+COPY package.json package-lock.json ./  
+RUN npm install --frozen-lockfile --production
+
+# 2️⃣ Etapa de compilação
+FROM node:18-alpine AS builder
+WORKDIR /usr/app
+
+# Copia os arquivos necessários para build
+COPY --from=deps /usr/app/node_modules ./node_modules
+COPY . .
+
+# Garante que estamos em ambiente de produção
+ENV NODE_ENV=production
+
+# Compila o projeto Next.js
 RUN npm run build
 
-FROM node:alpine as ts-remover
-WORKDIR /usr/app
-COPY --from=ts-compiler /usr/app/package*.json ./
-COPY --from=ts-compiler /usr/app/.next ./next
-
-FROM node:alpine
+# 3️⃣ Etapa final: Criação da imagem de produção
+FROM node:18-alpine AS runner
 WORKDIR /usr/app
 
-# Adicionando biblioteca openssl se necessário
+# Adiciona dependências essenciais do sistema
 RUN apk add --no-cache openssl
 
-# ENV DOCKERIZE_VERSION v0.6.1
-# RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-#     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-#     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+# Copia os arquivos compilados e configurações da aplicação
+COPY --from=builder /usr/app/.next .next
+COPY --from=builder /usr/app/public public
+COPY --from=builder /usr/app/package.json .
+COPY --from=builder /usr/app/node_modules ./node_modules
 
-# Copie a aplicação compilada para a imagem final
-COPY --from=ts-remover /usr/app ./
+# Define a variável de ambiente para produção
+ENV NODE_ENV=production
 
-# Instale alias de módulo
-RUN npm i --save module-alias
+# Expor a porta padrão do Next.js
+EXPOSE 3000
 
-# Use o script de entrada
-ENTRYPOINT ["npm", "start"]
-
-USER 1000
+# Comando para rodar a aplicação
+CMD ["node", "server.js"]
