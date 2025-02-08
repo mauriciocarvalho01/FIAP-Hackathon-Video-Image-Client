@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Button, CircularProgress, Box, Container, Typography, Alert } from '@mui/material';
 import { request } from "@/app/lib/http/request";
 import { useRouter } from "next/navigation";
+import { API_URL } from '@/app/config/constants'
 
 type User = {
   email: string
@@ -36,7 +37,7 @@ const VideoUpload = ({ user }: { user: User }) => {
     try {
     const [videoResponse, videoError] = await request({
         method: "POST",
-        url: `${process.env.API_URL}/v1/api/video/upload`,
+        url: `${API_URL}/v1/api/video/upload`,
         data: formData,
         config: {
             headers: {

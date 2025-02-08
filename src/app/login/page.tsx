@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { request } from "@/app/lib/http/request";
-
+import { API_URL } from '@/app/config/constants'
 
 type GenericType<T=any> = T
 
@@ -24,7 +24,7 @@ export default function Login() {
 
     const [loginResponse, loginError] = await request({
       method: "POST",
-      url: `${process.env.API_URL}/v1/api/login`,
+      url: `${API_URL}/v1/api/login`,
       data: {
         email,
         password,

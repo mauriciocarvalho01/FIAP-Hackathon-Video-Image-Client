@@ -12,6 +12,7 @@ import Alert from "@mui/joy/Alert";
 import CircularProgress from "@mui/joy/CircularProgress";
 import { request } from "@/app/lib/http/request";
 import JSZip from "jszip";
+import { API_URL } from '@/app/config/constants'
 
 
 type GenericType<T=any> =T
@@ -32,7 +33,7 @@ export default function MediaCover() {
     try {
       const [videoStatusResponse, videoStatusError] = await request({
         method: "GET",
-        url: `${process.env.API_URL}/v1/api/video/status?videoId=${videoId}`,
+        url: `${API_URL}/v1/api/video/status?videoId=${videoId}`,
         config: {
           headers: {
             Authorization: sessionStorage.getItem("accessToken"),

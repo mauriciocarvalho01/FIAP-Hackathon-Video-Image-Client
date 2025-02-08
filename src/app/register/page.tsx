@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { request } from "@/app/lib/http/request";
+import { API_URL } from '@/app/config/constants'
 
 export default function Register() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function Register() {
 
     const [loginResponse, loginError] = await request({
       method: "POST",
-      url: `${process.env.API_URL}/v1/api/register`,
+      url: `${API_URL}/v1/api/register`,
       data: {
         name,
         displayName: name.split(" ")[0],
