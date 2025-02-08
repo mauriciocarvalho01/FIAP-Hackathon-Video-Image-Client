@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: fiap
-  name: $APPLICATION_NAME-svc
+  name: fiap-hackathon-video-image-client-svc
 spec:
   type: LoadBalancer
   selector:
-    app: $APPLICATION_NAME
+    app: fiap-hackathon-video-image-client
   ports:
     - port: 80
       protocol: TCP
       targetPort: 4080
-      name: $APPLICATION_NAME-load-balancer
+      name: fiap-hackathon-video-image-client-load-balancer

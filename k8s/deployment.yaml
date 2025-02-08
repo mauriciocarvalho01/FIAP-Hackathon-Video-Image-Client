@@ -3,14 +3,14 @@ kind: Deployment
 metadata:
   annotations:
     reloader.stakater.com/auto: "true"
-    secret.reloader.stakater.com/reload: fiap/$APPLICATION_NAME
+    secret.reloader.stakater.com/reload: fiap/fiap-hackathon-video-image-client
   namespace: fiap
-  name: $APPLICATION_NAME
+  name: fiap-hackathon-video-image-client
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: $APPLICATION_NAME
+      app: fiap-hackathon-video-image-client
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -19,12 +19,12 @@ spec:
   template:
     metadata:
       labels:
-        app: $APPLICATION_NAME
+        app: fiap-hackathon-video-image-client
     spec:
       serviceAccountName: metrics-sa
       containers:
-        - name: $APPLICATION_NAME
-          image: $AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/$APPLICATION_NAME
+        - name: fiap-hackathon-video-image-client
+          image: $AWS_ACCOUNT_ID.dkr.ecr.AWS_REGION.amazonaws.com/fiap-hackathon-video-image-client
           imagePullPolicy: Always
           ports:
             - containerPort: 4080
@@ -44,7 +44,7 @@ spec:
             - secretRef:
                 name: hackathon-video-image-secrets
             - configMapRef:
-                name: $APPLICATION_NAME-vars
+                name: fiap-hackathon-video-image-client-vars
           readinessProbe:
               httpGet:
                   path: /v1/api/healthcheck

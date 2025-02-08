@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: $APPLICATION_NAME-hpa
+  name: fiap-hackathon-video-image-client-hpa
   namespace: fiap
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: $APPLICATION_NAME
+    name: fiap-hackathon-video-image-client
   minReplicas: 1
   maxReplicas: 5
   metrics:
