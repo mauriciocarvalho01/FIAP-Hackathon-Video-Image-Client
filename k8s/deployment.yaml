@@ -27,7 +27,7 @@ spec:
           image: 814482976567.dkr.ecr.us-east-1.amazonaws.com/hackathon-video-image-client:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 4080
+            - containerPort: 3000
               protocol: TCP
           securityContext:
             runAsUser: 1000
@@ -48,14 +48,14 @@ spec:
           readinessProbe:
               httpGet:
                   path: /v1/api/healthcheck
-                  port: 4080
+                  port: 3000
               initialDelaySeconds: 0
               timeoutSeconds: 1
               periodSeconds: 10
           livenessProbe:
               httpGet:
                   path: /v1/api/healthcheck
-                  port: 4080
+                  port: 3000
               initialDelaySeconds: 0
               timeoutSeconds: 1
               periodSeconds: 10
