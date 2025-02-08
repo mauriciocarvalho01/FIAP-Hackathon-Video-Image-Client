@@ -1,4 +1,5 @@
 'use client'
+import 'dotenv/config'
  
 import { useRouter } from 'next/navigation'
  
