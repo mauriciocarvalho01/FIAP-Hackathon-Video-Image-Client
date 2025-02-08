@@ -24,7 +24,7 @@ spec:
       serviceAccountName: metrics-sa
       containers:
         - name: fiap-hackathon-video-image-client
-          image: 814482976567.dkr.ecr.us-east-1.amazonaws.com/fiap-hackathon-video-image-client:latest
+          image: 814482976567.dkr.ecr.us-east-1.amazonaws.com/hackathon-video-image-client:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 4080
