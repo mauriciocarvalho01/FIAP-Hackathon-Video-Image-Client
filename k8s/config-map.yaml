@@ -6,5 +6,5 @@ metadata:
   labels:
     app: fiap-hackathon-video-image-client
 data:
-  API_URL: http://restaurante-acme-video-svc.fiap.svc.cluster.local
+  TESTE: http://restaurante-acme-video-svc.fiap.svc.cluster.local
  
