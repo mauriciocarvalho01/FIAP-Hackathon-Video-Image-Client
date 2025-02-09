@@ -10,5 +10,5 @@ spec:
   ports:
     - port: 80
       protocol: TCP
-      targetPort: 3000
+      targetPort: 4081
       name: fiap-hackathon-video-image-client-load-balancer

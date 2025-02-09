@@ -8,6 +8,6 @@ export default function Page() {
   router.push("/home");
  
   return (
-    <p>Redirecionando para o daashboard...</p>
+    <p>Redirecionando para o dashboard...</p>
   )
 }

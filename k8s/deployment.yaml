@@ -27,7 +27,7 @@ spec:
           image: 814482976567.dkr.ecr.us-east-1.amazonaws.com/hackathon-video-image-client:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000
+            - containerPort: 4081
               protocol: TCP
           securityContext:
             runAsUser: 1000
