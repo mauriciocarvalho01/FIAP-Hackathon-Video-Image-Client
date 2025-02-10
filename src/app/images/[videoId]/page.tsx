@@ -12,9 +12,10 @@ import Alert from "@mui/joy/Alert";
 import CircularProgress from "@mui/joy/CircularProgress";
 import { request } from "@/app/lib/http/request";
 import JSZip from "jszip";
-import { API_URL } from "@/app/config/constants";
+import { API_URL } from '@/app/config/constants'
 
-type GenericType<T = any> = T;
+
+type GenericType<T=any> =T
 
 export default function MediaCover() {
   const [alert, setAlert] = React.useState<{ error?: string }>({});
@@ -44,17 +45,17 @@ export default function MediaCover() {
         setAlert({ error: "Não foi possível localizar o status do vídeo." });
         return;
       }
-      const { data } = videoStatusResponse as GenericType;
+      const { data } = videoStatusResponse as GenericType
 
       // Se a resposta for um array, pega o primeiro item
       const videoStatusData =
-        Array.isArray(data) && data.length > 0 ? data[0] : data;
+        Array.isArray(data) &&
+        data.length > 0
+          ? data[0]
+          : data;
 
       // Atualiza o estado somente se os dados forem diferentes
-      if (
-        JSON.stringify(videoStatusRef.current) !==
-        JSON.stringify(videoStatusData)
-      ) {
+      if (JSON.stringify(videoStatusRef.current) !== JSON.stringify(videoStatusData)) {
         videoStatusRef.current = videoStatusData;
         setVideoStatus(videoStatusData);
       }
@@ -89,37 +90,42 @@ export default function MediaCover() {
   // Após o status deixar de ser "pending", faz o download e descompacta o arquivo ZIP de imagens
   React.useEffect(() => {
     const fetchAndUnzipImages = async () => {
-      if (!videoStatus?.imagesUrl) return;
-      console.log("Baixando arquivo ZIP:", videoStatus.imagesUrl);
-
-      try {
-        const response = await fetch(videoStatus.imagesUrl);
-        if (!response.ok) throw new Error(`Erro HTTP ${response.status}`);
-
-        const blob = await response.blob();
-        console.log("Arquivo ZIP baixado. Tamanho:", blob.size);
-
-        const zip = await JSZip.loadAsync(blob);
-        console.log(
-          "ZIP carregado. Arquivos encontrados:",
-          Object.keys(zip.files)
-        );
-
-        const filePromises = Object.values(zip.files)
-          .filter((file) => file.name.match(/frame-\d+\.png$/))
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map(async (file) => {
-            const fileBlob = await file.async("blob");
-            return URL.createObjectURL(fileBlob);
+      if (videoStatus?.imagesUrl) {
+        try {
+          // Configurando o responseType para "blob" para receber o arquivo ZIP como blob
+          const [imagesResponse, imagesError] = await request({
+            method: "GET",
+            url: videoStatus.imagesUrl,
+            config: {
+              responseType: "blob",
+            },
           });
+          if (imagesError) {
+            throw new Error("Erro ao baixar o arquivo ZIP");
+          }
 
-        const imageUrls = await Promise.all(filePromises);
-        console.log("Imagens extraídas:", imageUrls.length);
-        setImages(imageUrls);
-        setCurrentIndex(0);
-      } catch (error) {
-        console.error("Erro ao processar o ZIP:", error);
-        setAlert({ error: "Erro ao processar imagens do vídeo." });
+          const { data } = imagesResponse as GenericType
+
+          // Em uma resposta do axios com responseType "blob", o blob estará em imagesResponse.data
+          const blob = data;
+          const zip = await JSZip.loadAsync(blob);
+
+          // Filtra os arquivos com o padrão frame-XXXX.png, ordena e cria URLs para cada imagem
+          const filePromises = Object.values(zip.files)
+            .filter((file) => file.name.match(/frame-\d+\.png$/))
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(async (file) => {
+              const fileBlob = await file.async("blob");
+              return URL.createObjectURL(fileBlob);
+            });
+
+          const imageUrls = await Promise.all(filePromises);
+          setImages(imageUrls);
+          setCurrentIndex(0);
+        } catch (error) {
+          console.error("Erro ao descompactar imagens:", error);
+          setAlert({ error: "Erro ao processar imagens do vídeo." });
+        }
       }
     };
 
@@ -280,11 +286,7 @@ export default function MediaCover() {
               </Box>
             </Box>
           ) : (
-            <Typography>
-              {!alert.error
-                ? "Renderizando imagens..."
-                : "Ocorreu um erro ao renderizar as imagens"}
-            </Typography>
+            <Typography>{!alert.error ? 'Renderizando imagens...' : 'Ocorreu um erro ao renderizar as imagens'}</Typography>
           )}
           <Box sx={{ textAlign: "center", marginTop: 2 }}>
             <Button

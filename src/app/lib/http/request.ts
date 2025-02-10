@@ -9,6 +9,7 @@ async function safeAsync<T>(
     const data = await asyncFn();
     return [data, null];
   } catch (error) {
+    console.log(error)
     let normalizedError: Error;
 
     // Verifica se é um AxiosError
